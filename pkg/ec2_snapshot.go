@@ -27,7 +27,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/sts/stsiface"
 )
 
-// getSecurityGroups return all security groups from specified region
+// getSnapshot return all snapshots from specified region
 func getSnapshot(callerIdentity string, client ec2iface.EC2API) []*ec2.Snapshot {
 	input := &ec2.DescribeSnapshotsInput{
 		OwnerIds: []*string{aws.String(callerIdentity)},
@@ -46,7 +46,7 @@ func getSnapshot(callerIdentity string, client ec2iface.EC2API) []*ec2.Snapshot 
 	return result
 }
 
-// ParseSecurityGroupTags parse output from getSecurityGroups and return SG ids and specified tags.
+// ParseSnapshotTags parse output from getSnapshot and return snapshot ids and specified tags.
 func ParseSnapshotTags(tagsToRead string, client ec2iface.EC2API, stsClient stsiface.STSAPI) [][]string {
 	callerIdentity, err := stsClient.GetCallerIdentity(&sts.GetCallerIdentityInput{})
 	if err != nil {
@@ -65,7 +65,7 @@ func ParseSnapshotTags(tagsToRead string, client ec2iface.EC2API, stsClient stsi
 	return rows
 }
 
-// TagSecurityGroups tag security groups. Take as input data from csv file. Where first column id
+// TagSnapshot tag snapshots. Take as input data from csv file. Where first column id
 func TagSnapshot(csvData [][]string, client ec2iface.EC2API) {
 	for r := 1; r < len(csvData); r++ {
 		var tags []*ec2.Tag
